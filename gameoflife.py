@@ -3,7 +3,7 @@ from random import choice, seed
 import cProfile
 
 import pygame
-from pygame import Surface
+from pygame import Surface, Rect
 from pygame.time import Clock
 
 seed(10000)
@@ -58,7 +58,7 @@ def update_game_board(updated_cells: List[int]) -> None:
     for x, y in zip(*[iter(updated_cells)]*2):
         # Update the cells that have been listed for an update.
         # Invert the cell type on the game board.
-        GAME_BOARD[y][x] = not GAME_BOARD[y][x]
+        GAME_BOARD[y][x]: bool = not GAME_BOARD[y][x]
 
 
 def permutate_cells() -> List[int]:
@@ -101,15 +101,15 @@ def draw_grid(updated_cells: List[int] = None) -> None:
         # This is the first drawing of the board.
         for cell_pos_y in range(WINDOW_HEIGHT_IN_CELLS):
             for cell_pos_x in range(WINDOW_WIDTH_IN_CELLS):
-                rect = pygame.Rect(
+                rect = Rect(
                     cell_pos_x * CELL_WIDTH_IN_PIXELS,
                     cell_pos_y * CELL_WIDTH_IN_PIXELS,
                     CELL_WIDTH_IN_PIXELS,
                     CELL_WIDTH_IN_PIXELS,
                 )
 
-                cell = GAME_BOARD[cell_pos_x][cell_pos_y]
-                cell_colour = ALIVE_CELL_COLOUR if cell else DEAD_CELL_COLOUR
+                cell: bool = GAME_BOARD[cell_pos_x][cell_pos_y]
+                cell_colour: str = ALIVE_CELL_COLOUR if cell else DEAD_CELL_COLOUR
 
                 pygame.draw.rect(SCREEN, cell_colour, rect)
         return
@@ -122,14 +122,14 @@ def draw_grid(updated_cells: List[int] = None) -> None:
         window_pos_x: int = updated_cell_x * CELL_WIDTH_IN_PIXELS
         window_pos_y: int = updated_cell_y * CELL_WIDTH_IN_PIXELS
         
-        rect = pygame.Rect(
+        rect = Rect(
             window_pos_x,
             window_pos_y,
             CELL_WIDTH_IN_PIXELS,
             CELL_WIDTH_IN_PIXELS,
         )
 
-        cell_colour = ALIVE_CELL_COLOUR if cell_alive_state else DEAD_CELL_COLOUR
+        cell_colour: str = ALIVE_CELL_COLOUR if cell_alive_state else DEAD_CELL_COLOUR
 
         pygame.draw.rect(SCREEN, cell_colour, rect)
 
@@ -206,6 +206,6 @@ SCREEN: Surface = pygame.display.set_mode((
 ))
 CLOCK: Clock = pygame.time.Clock()
 
-GAME_BOARD = generate_temp_board(RANDOM_INITAL_BOARD)
+GAME_BOARD: List[List[bool]] = generate_temp_board(RANDOM_INITAL_BOARD)
 
 cProfile.run('test()')
