@@ -16,13 +16,6 @@ RANDOM_INITAL_BOARD: Final[bool] = True
 ALIVE_CELL_COLOUR: Final[str] = "white"
 DEAD_CELL_COLOUR: Final[str] = "black"
 
-# Required for speed improvements on `get_surrounding_cells()`.
-DELTA_OFFSETS: Final[List[int]] = [-1, 0, 1]
-DELTA_SURROUNDING_OFFSETS_PACKED: Final[List[Tuple[int]]] = [
-    (dx, dy) for dx in DELTA_OFFSETS for dy in DELTA_OFFSETS
-    if not (dx == 0 and dy == 0)
-]
-
 # These shouldn't be edited.
 GENERATION_PERMUTATIONS_ENABLED: bool = True
 GAME_BOARD: List[List[bool]] = []
