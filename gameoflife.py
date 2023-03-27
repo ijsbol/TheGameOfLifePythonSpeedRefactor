@@ -41,12 +41,13 @@ def generate_temp_board(random_board: bool = False) -> List[List[bool]]:
     return temp_board
 
 def get_surrounding_cells(x: int, y: int) -> int:
-    dx = 1
-    dy = 1
-    if (x+dx) >= WINDOW_WIDTH_IN_CELLS:
+    dx, dy = 1, 1
+    
+    if (x + dx) >= WINDOW_WIDTH_IN_CELLS:
         dx -= x
-    if (y+dy) >= WINDOW_HEIGHT_IN_CELLS:
+    if (y + dy) >= WINDOW_HEIGHT_IN_CELLS:
         dy -= y
+
     return sum([
         GAME_BOARD[y +dy][x - 1], GAME_BOARD[y +dy][x    ], GAME_BOARD[y +dy][x +dx],
         GAME_BOARD[y    ][x - 1],                           GAME_BOARD[y    ][x +dx],
