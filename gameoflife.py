@@ -58,10 +58,8 @@ def update_game_board(updated_cells: List[int]) -> None:
     for x, y in zip(*[iter(updated_cells)]*2):
         # Update the cells that have been listed for an update.
         # Invert the cell type on the game board.
-        if GAME_BOARD[y][x]:
-            GAME_BOARD[y][x] = False
-        else:
-            GAME_BOARD[y][x] = True
+        GAME_BOARD[y][x] = not GAME_BOARD[y][x]
+
 
 def permutate_cells() -> List[int]:
     # Permute cells one generation.
