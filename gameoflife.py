@@ -42,10 +42,10 @@ def generate_temp_board(random_board: bool = False) -> List[List[bool]]:
 
 def get_surrounding_cells(x: int, y: int) -> int:
     dx, dy = 1, 1
-    
-    if (x + dx) >= WINDOW_WIDTH_IN_CELLS:
+
+    if (x + 1) >= WINDOW_WIDTH_IN_CELLS:
         dx -= x
-    if (y + dy) >= WINDOW_HEIGHT_IN_CELLS:
+    if (y + 1) >= WINDOW_HEIGHT_IN_CELLS:
         dy -= y
 
     return sum([
