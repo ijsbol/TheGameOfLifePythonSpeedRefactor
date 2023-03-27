@@ -18,19 +18,19 @@ DEAD_CELL_COLOUR: Final[str] = "black"
 
 # These shouldn't be edited.
 GENERATION_PERMUTATIONS_ENABLED: bool = True
+CELL_ALIVE_STATES: Final[List[bool]] = [True, False]
 GAME_BOARD: List[List[bool]] = []
 
 # Game logic functions.
 
 def generate_temp_board(random_board: bool = False) -> List[List[bool]]:
     # Generate a game board, empty unless random requested.
-    cell_alive_states = [True, False]
     temp_board: List[List[bool]] = []
     for y in range(WINDOW_HEIGHT_IN_CELLS):
         temp_board.append([])
         for x in range(WINDOW_WIDTH_IN_CELLS):
             if random_board:
-                temp_board[y].append(choice(cell_alive_states))
+                temp_board[y].append(choice(CELL_ALIVE_STATES))
             else:
                 temp_board[y].append(False)
     
