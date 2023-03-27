@@ -8,6 +8,7 @@ from pygame.time import Clock
 
 seed(10000)
 
+# Editable values for the game board.
 WINDOW_WIDTH_IN_CELLS: Final[int] = 200
 WINDOW_HEIGHT_IN_CELLS: Final[int] = 200
 CELL_WIDTH_IN_PIXELS: Final[int] = 2
@@ -15,14 +16,16 @@ RANDOM_INITAL_BOARD: Final[bool] = True
 ALIVE_CELL_COLOUR: Final[str] = "white"
 DEAD_CELL_COLOUR: Final[str] = "black"
 
-GENERATION_PERMUTATIONS_ENABLED: bool = True
-GAME_BOARD: List[List[bool]] = []
-
-delta_offsets = [-1, 0, 1]
-DELTA_SURROUNDING_OFFSETS_PACKED: List[Tuple[int]] = [
-    (dx, dy) for dx in delta_offsets for dy in delta_offsets
+# Required for speed improvements on `get_surrounding_cells()`.
+DELTA_OFFSETS: Final[List[int]] = [-1, 0, 1]
+DELTA_SURROUNDING_OFFSETS_PACKED: Final[List[Tuple[int]]] = [
+    (dx, dy) for dx in DELTA_OFFSETS for dy in DELTA_OFFSETS
     if not (dx == 0 and dy == 0)
 ]
+
+# These shouldn't be edited.
+GENERATION_PERMUTATIONS_ENABLED: bool = True
+GAME_BOARD: List[List[bool]] = []
 
 # Game logic functions.
 
