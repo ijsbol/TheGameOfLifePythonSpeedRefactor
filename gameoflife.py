@@ -11,13 +11,15 @@ seed(10000)
 # Editable values for the game board.
 WINDOW_WIDTH_IN_CELLS: Final[int] = 200
 WINDOW_HEIGHT_IN_CELLS: Final[int] = 200
-CELL_WIDTH_IN_PIXELS: Final[int] = 2
+CELL_WIDTH_IN_PIXELS: Final[int] = 10
 RANDOM_INITAL_BOARD: Final[bool] = True
 ALIVE_CELL_COLOUR: Final[str] = "white"
 DEAD_CELL_COLOUR: Final[str] = "black"
 
+global GENERATION_PERMUTATIONS_ENABLED
+
 # These shouldn't be edited.
-GENERATION_PERMUTATIONS_ENABLED: bool = True
+GENERATION_PERMUTATIONS_ENABLED: bool = False
 CELL_ALIVE_STATES: Final[List[bool]] = [True, False]
 GAME_BOARD: List[List[bool]] = []
 
@@ -55,7 +57,6 @@ def update_game_board(updated_cells: List[int]) -> None:
         # Update the cells that have been listed for an update.
         # Invert the cell type on the game board.
         GAME_BOARD[y][x]: bool = not GAME_BOARD[y][x]
-
 
 def permutate_cells() -> List[int]:
     # Permute cells one generation.
@@ -108,6 +109,8 @@ def draw_grid(updated_cells: List[int] = None) -> None:
                 cell_colour: str = ALIVE_CELL_COLOUR if cell else DEAD_CELL_COLOUR
 
                 pygame.draw.rect(SCREEN, cell_colour, rect)
+        
+        pygame.display.update()
         return
 
     # This is a subsequent drawing of the board and should
@@ -128,6 +131,8 @@ def draw_grid(updated_cells: List[int] = None) -> None:
         cell_colour: str = ALIVE_CELL_COLOUR if cell_alive_state else DEAD_CELL_COLOUR
 
         pygame.draw.rect(SCREEN, cell_colour, rect)
+    
+    pygame.display.update()
 
 def figure_out_clicked_cell(mouse_pos_x: int, mouse_pos_y: int) -> Tuple[int]:
     # Figure out what cell what clicked.
@@ -136,7 +141,25 @@ def figure_out_clicked_cell(mouse_pos_x: int, mouse_pos_y: int) -> Tuple[int]:
 
     return cell_pos_x, cell_pos_y
 
+def carry_out_user_interaction(first_clicked_state_has_been_set: bool, mouse_first_clicked_cell_alive_state: bool) -> Tuple[bool]:
+    mouse_pos = pygame.mouse.get_pos()
+    x, y  = figure_out_clicked_cell(mouse_pos[1], mouse_pos[0])
+
+    if not first_clicked_state_has_been_set:
+        mouse_first_clicked_cell_alive_state = GAME_BOARD[y][x]
+        first_clicked_state_has_been_set = True
+
+    if GAME_BOARD[y][x] == mouse_first_clicked_cell_alive_state:
+        GAME_BOARD[y][x] = not GAME_BOARD[y][x]
+    
+    draw_grid()
+    
+    return first_clicked_state_has_been_set, mouse_first_clicked_cell_alive_state
+
+
+
 def test():
+    global GENERATION_PERMUTATIONS_ENABLED
     test = 0
 
     draw_grid()
@@ -155,41 +178,40 @@ def test():
                 # Check if the player has closed the game.
                 pygame.quit()
 
-            # elif event.type == pygame.MOUSEBUTTONDOWN:
-            #     mouse_is_currently_clicked = True
-            #     first_clicked_state_has_been_set, mouse_first_clicked_cell_alive_state = (
-            #         carry_out_user_interaction(
-            #             first_clicked_state_has_been_set,
-            #             mouse_first_clicked_cell_alive_state
-            #         )
-            #     )
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_is_currently_clicked = True
+                first_clicked_state_has_been_set, mouse_first_clicked_cell_alive_state = (
+                    carry_out_user_interaction(
+                        first_clicked_state_has_been_set,
+                        mouse_first_clicked_cell_alive_state
+                    )
+                )
                 
-            # elif event.type == pygame.MOUSEBUTTONUP:
-            #     first_clicked_state_has_been_set = False
-            #     mouse_is_currently_clicked = False
+            elif event.type == pygame.MOUSEBUTTONUP:
+                first_clicked_state_has_been_set = False
+                mouse_is_currently_clicked = False
             
-            # elif event.type == pygame.MOUSEMOTION and mouse_is_currently_clicked:
-            #     first_clicked_state_has_been_set, mouse_first_clicked_cell_alive_state = (
-            #         carry_out_user_interaction(
-            #             first_clicked_state_has_been_set,
-            #             mouse_first_clicked_cell_alive_state
-            #         )
-            #     )
+            elif event.type == pygame.MOUSEMOTION and mouse_is_currently_clicked:
+                first_clicked_state_has_been_set, mouse_first_clicked_cell_alive_state = (
+                    carry_out_user_interaction(
+                        first_clicked_state_has_been_set,
+                        mouse_first_clicked_cell_alive_state
+                    )
+                )
 
                     
-        # keys_pressed_this_frame = pygame.key.get_pressed()
-        # if keys_pressed_this_frame[pygame.K_SPACE]:
-        #     # If space key is pressed, resume the simulation.
-        #     GENERATION_PERMUTATIONS_ENABLED = True
-        # elif keys_pressed_this_frame[pygame.K_TAB]:
-        #     # If tab key is pressed, pause the simulation.
-        #     GENERATION_PERMUTATIONS_ENABLED = False
+        keys_pressed_this_frame = pygame.key.get_pressed()
+        if keys_pressed_this_frame[pygame.K_SPACE]:
+            # If space key is pressed, resume the simulation.
+            GENERATION_PERMUTATIONS_ENABLED = True
+        elif keys_pressed_this_frame[pygame.K_TAB]:
+            # If tab key is pressed, pause the simulation.
+            GENERATION_PERMUTATIONS_ENABLED = False
 
         if GENERATION_PERMUTATIONS_ENABLED:
             updated_cells = permutate_cells()
             draw_grid(updated_cells)
             # Update the display
-            pygame.display.update()
             test += 1
             if test == 600:
                 return
